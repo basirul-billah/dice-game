@@ -27,8 +27,8 @@ const validateDiceArguments = (args) => {
   }
 
   for (const arg of args) {
-    if (!/^\d+(,\d+)*$/.test(arg)) {
-      console.error('Invalid dice configuration. Please use comma-separated integers.');
+    if (!/^\d+(,\d+){5}$/.test(arg)) {
+      console.error('Invalid dice configuration. Each argument must contain exactly 6 comma-separated integers.\nExample: 1,2,3,4,5,6 4,4,5,6,7,3 3,5,2,7,5,8');
       return false;
     }
   }
@@ -56,13 +56,13 @@ const processDiceChoice = (args, diceChoice, opponentDiceSum) => {
 
   if (diceChoice === '?') {
     displayHelpWithProbabilities(args);
-    startGame(args); // Restart the game after showing help
+    startGame(args); 
     return;
   }
 
   if (isNaN(diceChoice) || diceChoice < 0 || diceChoice >= args.length) {
     console.log('Invalid dice choice.');
-    startGame(args); // Restart the game for invalid input
+    startGame(args);
     return;
   }
 
@@ -103,13 +103,13 @@ const userMoveFirst = (args) => {
 
     if (diceChoice === '?') {
       displayHelpWithProbabilities(args);
-      startGame(args); // Restart the game after showing help
+      startGame(args);
       return;
     }
 
     if (isNaN(diceChoice) || diceChoice < 0 || diceChoice >= args.length) {
       console.log('Invalid dice choice.');
-      startGame(args); // Restart the game for invalid input
+      startGame(args);
       return;
     }
 
@@ -158,12 +158,12 @@ const calculateWinProbabilities = (args) => {
 const displayHelpWithProbabilities = (args) => {
   const probabilities = calculateWinProbabilities(args);
 
-  console.log("Win probabilities for each dice:");
+  console.log("\nWin probabilities for each dice:");
   probabilities.forEach(({ dice, winProbability }) => {
     console.log(`[${dice}] - ${winProbability.toFixed(2)}%`);
   });
 
-  console.log("\nChoose your dice wisely!");
+  console.log("\n");
 };
 
 const startGame = (args, key, message, hmacHex) => {
@@ -177,6 +177,7 @@ const startGame = (args, key, message, hmacHex) => {
 
     if (userSelection === '?') {
       displayHelpWithProbabilities(args);
+      startGame(args, key, message, hmacHex);
       return;
     }
 
